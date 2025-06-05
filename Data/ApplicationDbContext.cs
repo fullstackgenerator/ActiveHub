@@ -13,7 +13,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     
     public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     public DbSet<MembershipType> MembershipTypes { get; set; }
-    public DbSet<Membership> Memberships { get; set; }  // This matches your Membership.cs
+    public DbSet<Membership> Memberships { get; set; } 
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
