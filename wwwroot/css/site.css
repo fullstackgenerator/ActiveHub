@@ -276,3 +276,67 @@ ul {
   flex-direction: column;
   gap: 15px;
 }
+
+.carousel {
+  height: 600px;
+}
+.carousel-item img {
+  height: 100%;
+  width: auto;
+  position: relative;
+  top: 50px;
+}
+
+/* programs section */
+.programs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.program-card {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  position: relative;
+}
+
+.program-card:hover {
+  transform: translateY(-10px);
+}
+
+.program-img {
+  height: 250px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.program-content {
+  padding: 20px;
+  background-color: var(--white);
+}
+
+.program-title {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.program-duration {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--primary-color);
+  margin-bottom: 15px;
+}
+
+.program-description {
+  margin-bottom: 20px;
+}
+
+.program-price {
+  font-weight: 700;
+  color: var(--dark-color);
+  font-size: 1.2rem;
+}
+
