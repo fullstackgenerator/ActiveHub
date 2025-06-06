@@ -280,6 +280,39 @@ ul {
   top: 50px;
 }
 
+.carousel-bg {
+  background: linear-gradient(90deg,
+  rgba(45, 52, 54, 0.8) 0%,
+  rgba(78, 205, 196, 0.6) 100%
+  );
+  border-radius: 5px;
+  width: 50%;
+  padding: 25px 35px 0 35px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  overflow: hidden;
+  text-align: center;
+}
+.carousel-bg-1,
+.carousel-bg-2,
+.carousel-bg-3,
+.carousel-bg-4,
+.carousel-bg-5 {
+  position: absolute;
+}
+
+.carousel-bg-1,
+.carousel-bg-3,
+.carousel-bg-4,
+.carousel-bg-5 {
+  transform: translate(-30%, 20%);
+}
+
+.carousel-bg-2 {
+  transform: translate(0, 0);
+}
+
 /* programs section */
 .programs-grid {
   display: grid;
