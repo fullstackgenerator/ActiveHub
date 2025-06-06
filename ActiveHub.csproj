@@ -20,8 +20,4 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Views\Offer\" />
-    </ItemGroup>
-
 </Project>

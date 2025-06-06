@@ -28,4 +28,10 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+    
+    [HttpGet("/program")]
+    public IActionResult Program()
+    {
+        return View("~/Views/Program/Index.cshtml");
+    }
 }
