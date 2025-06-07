@@ -378,8 +378,12 @@ ul {
   background-size: cover;
   background-position: center;
   color: white;
-  padding: 120px 0;
+  padding: 40px 0;
   text-align: center;
+}
+
+.section-title {
+  padding-top: 110px;
 }
 
 .program-hero .section-title {
