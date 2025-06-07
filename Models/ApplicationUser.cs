@@ -15,22 +15,18 @@ public class ApplicationUser : IdentityUser
     [PersonalData]
     public string LastName { get; set; }
     
-    [Required]
     [Display(Name = "Date of Birth")]
     [DataType(DataType.Date)]
     [PersonalData]
-    public DateOnly DateOfBirth { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
     
-    [Required]
     [PersonalData]
-    public string Address { get; set; }
+    public string? Address { get; set; }
     
-    [Required]
     [Display(Name = "Postal Code")]
     [PersonalData]
-    public int PostNumber { get; set; }
+    public int? PostNumber { get; set; }
     
-    [Required]
     [PersonalData]
-    public string City { get; set; }
+    public string? City { get; set; }
 }

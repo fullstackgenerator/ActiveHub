@@ -2,7 +2,7 @@
 
 namespace ActiveHub.Models;
 
-public class Registration
+public class Register
 {
     [Required]
     [Display(Name = "Username")]

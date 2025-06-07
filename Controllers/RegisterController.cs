@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ActiveHub.Controllers;
 
-public class RegistrationController : Controller
+public class RegisterController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
 
-    public RegistrationController(
+    public RegisterController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager)
     {
@@ -18,14 +18,14 @@ public class RegistrationController : Controller
     }
 
     [HttpGet]
-    public IActionResult Register()
+    public IActionResult Index()
     {
         return View();
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(Registration model)
+    public async Task<IActionResult> Index(Register model)
     {
         if (!ModelState.IsValid) return View(model);
 
