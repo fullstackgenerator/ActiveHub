@@ -1,45 +1,59 @@
-﻿@{
+﻿@model ActiveHub.Models.Register
+
+@{
     ViewData["Title"] = "Register - FitPro";
 }
 
+<section class="section">
+    <div class="container">
 
- @* <div class="row justify-content-center"> *@
- @*            <div class="col-lg-8 mb-5"> *@
- @*                <form asp-action="Index" method="post"> *@
- @*                    <div class="row g-3"> *@
- @*                        <div class="col-md-6"> *@
- @*                             *@
- @*                            <label for="fullName" class="form-label visually-hidden">Your Name</label> *@
- @*                            <input type="text" class="form-control" id="fullName" placeholder="Your Name" required> *@
- @*                        </div> *@
- @*                        <div class="col-md-6"> *@
- @*                            <label for="emailInput" class="form-label visually-hidden">Email address</label> *@
- @*                            <input type="email" class="form-control" id="emailInput" placeholder="name@example.com" *@
- @*                                   required> *@
- @*                        </div> *@
- @*                    </div> *@
- @* *@
- @*                    <div class="row g-3 mt-0"> *@
- @*                        <div class="col-md-6"> *@
- @*                            <label for="subjectSelect" class="form-label visually-hidden">Choose a subject</label> *@
- @*                            <select class="form-select" id="subjectSelect" aria-label="Choose a subject" required> *@
- @*                                <option selected disabled>Choose a subject</option> *@
- @*                                <option value="1">Membership Inquiry</option> *@
- @*                                <option value="2">General Questions</option> *@
- @*                                <option value="3">Other</option> *@
- @*                            </select> *@
- @*                        </div> *@
- @*                        <div class="col-md-6"> *@
- @*                            <label for="messageTextarea" class="form-label visually-hidden">Your Message</label> *@
- @*                            <textarea class="form-control" id="messageTextarea" rows="4" placeholder="Your Message" *@
- @*                                      required></textarea> *@
- @*                        </div> *@
- @*                    </div> *@
- @* *@
- @*                    <div class="d-grid gap-2 col-md-6 mx-auto mt-4"> *@
- @*                        <button type="submit" class="btn btn-primary">Send Message</button> *@
- @*                    </div> *@
- @*                </form> *@
- @*            </div> *@
- @*            </div> *@
+        <div class="program-container mb-5">
+            <div class="row g-4 align-items-center">
+                <form asp-action="Index" method="post" class="mt-4">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    @Html.AntiForgeryToken()
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <p class="card-text">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <input asp-for="Username" class="form-control" placeholder="Chose username"/>
+                                    <span asp-validation-for="Username" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <input asp-for="Email" class="form-control" placeholder="Email"/>
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <input asp-for="Password" class="form-control" placeholder="Password"/>
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <input asp-for="ConfirmPassword" class="form-control"
+                                           placeholder="Confirm password"/>
+                                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                </div>
+
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <input asp-for="FirstName" class="form-control" placeholder="First name"/>
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <input asp-for="LastName" class="form-control" placeholder="Last name"/>
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-primary mt-3">Register</button>
+                            <a href="/" class="btn btn-sm btn-outline mt-3">Back</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
       
