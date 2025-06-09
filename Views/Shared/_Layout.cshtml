@@ -22,8 +22,8 @@
                     <a href="http://localhost:5056/#contact" class="nav-link">Contact</a>
                 </div>
                 <div class="nav-actions">
-                    <a href="/login" class="btn btn-outline">Login</a>
-                    <a href="/register" class="btn btn-primary">Join Now</a>
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline">Login</a>
+                    <a asp-controller="Register" asp-action="Index" class="btn btn-primary">Join Now</a>
                 </div>
                 <button class="mobile-menu-btn">
                     <i class="fas fa-bars"></i>
@@ -39,8 +39,8 @@
             <a href="/pricing" class="mobile-nav-link">Pricing</a>
             <a href="/contact" class="mobile-nav-link">Contact</a>
             <div class="mobile-menu-actions">
-                <a href="/login" class="btn btn-outline">Login</a>
-                <a href="/register" class="btn btn-primary">Join Now</a>
+                <a asp-controller="Account" asp-action="Login" class="btn btn-outline">Login</a>
+                <a asp-controller="Register" asp-action="Index" class="btn btn-primary">Join Now</a>
             </div>
         </div>
     </div>

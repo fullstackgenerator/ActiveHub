@@ -31,7 +31,7 @@ public class RegisterController : Controller
 
         var user = new ApplicationUser 
         {
-            UserName = model.Username,
+            UserName = model.Email,
             Email = model.Email,
             FirstName = model.FirstName,
             LastName = model.LastName

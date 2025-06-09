@@ -5,10 +5,6 @@ namespace ActiveHub.Models;
 public class Register
 {
     [Required]
-    [Display(Name = "Username")]
-    public string Username { get; set; }
-    
-    [Required]
     [EmailAddress]
     [Display(Name = "Email")]
     public string Email { get; set; }

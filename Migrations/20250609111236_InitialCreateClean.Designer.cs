@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ActiveHub.Data.Migrations
+namespace ActiveHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250607162306_UpdateApplicationUserAndCleanUpDbSets")]
-    partial class UpdateApplicationUserAndCleanUpDbSets
+    [Migration("20250609111236_InitialCreateClean")]
+    partial class InitialCreateClean
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
