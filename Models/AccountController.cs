@@ -1,4 +1,5 @@
 ﻿using ActiveHub.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -49,17 +50,13 @@ public class AccountController : Controller
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Dashboard", "Account");
         }
         else if (result.IsLockedOut)
         {
             ModelState.AddModelError(string.Empty, "Account locked out. Please try again later.");
         }
-        else if (result.IsNotAllowed)
-        {
-            ModelState.AddModelError(string.Empty, "Login not allowed. Account may not be confirmed.");
-        }
-        else // Other failures like wrong password
+        else //like wrong password
         {
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
         }
@@ -73,5 +70,16 @@ public class AccountController : Controller
     {
         await _signInManager.SignOutAsync();
         return RedirectToAction("Index", "Home");
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Dashboard()
+    {
+        var userId = _userManager.GetUserId(User);
+        var userName = User.Identity.Name;
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        return View();
     }
 }

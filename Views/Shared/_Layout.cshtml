@@ -1,60 +1,84 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - ActiveHub</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <nav class="navbar">
-                <a href="/" class="logo">
-                    <span>Fit</span>Pro
-                </a>
-                <div class="nav-links">
-                    <a href="/" class="nav-link active">Home</a>
-                    <a href="http://localhost:5056/#program" class="nav-link">Programs</a>
-                    <a href="http://localhost:5056/#contact" class="nav-link">Contact</a>
-                </div>
-                <div class="nav-actions">
-                    <a asp-controller="Account" asp-action="Login" class="btn btn-outline">Login</a>
-                    <a asp-controller="Register" asp-action="Index" class="btn btn-primary">Join Now</a>
-                </div>
-                <button class="mobile-menu-btn">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </nav>
-        </div>
-    </header>
-
-    <div class="mobile-menu">
-        <div class="mobile-menu-links">
-            <a href="/" class="mobile-nav-link active">Home</a>
-            <a href="/programs" class="mobile-nav-link">Programs</a>
-            <a href="/pricing" class="mobile-nav-link">Pricing</a>
-            <a href="/contact" class="mobile-nav-link">Contact</a>
-            <div class="mobile-menu-actions">
-                <a asp-controller="Account" asp-action="Login" class="btn btn-outline">Login</a>
-                <a asp-controller="Register" asp-action="Index" class="btn btn-primary">Join Now</a>
+<header class="header">
+    <div class="container">
+        <nav class="navbar">
+            <a href="/" class="logo">
+                <span>Fit</span>Pro
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link active">Home</a>
+                <a asp-controller="Home" asp-action="Index" asp-fragment="program" class="nav-link">Programs</a>
+                <a asp-controller="Home" asp-action="Index" asp-fragment="contact" class="nav-link">Contact</a>
             </div>
+            <div class="nav-actions">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="Account" asp-action="Dashboard" class="btn btn-sm btn-outline">Dashboard</a>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline-block">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-primary">Logout</button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-outline">Login</a>
+                    <a asp-controller="Register" asp-action="Index" class="btn btn-sm btn-primary">Join Now</a>
+                }
+            </div>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </div>
+</header>
+
+<div class="mobile-menu">
+    <div class="mobile-menu-links">
+        <a href="/" class="mobile-nav-link active">Home</a>
+        <a href="/programs" class="mobile-nav-link">Programs</a>
+        <a href="/pricing" class="mobile-nav-link">Pricing</a>
+        <a href="/contact" class="mobile-nav-link">Contact</a>
+        <div class="mobile-menu-actions">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Account" asp-action="Dashboard" class="btn btn-sm btn-outline">Dashboard</a>
+                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline-block">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-primary">Logout</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="btn btn-sm btn-outline">Login</a>
+                <a asp-controller="Register" asp-action="Index" class="btn btn-sm btn-primary">Join Now</a>
+            }
         </div>
     </div>
+</div>
 
-    <main role="main">
-        @RenderBody()
-    </main>
+<main role="main">
+    @RenderBody()
+</main>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
 
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); } 
-    
-    @await RenderSectionAsync("Scripts", required: false)
+@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
