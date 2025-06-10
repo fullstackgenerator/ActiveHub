@@ -24,6 +24,8 @@ public class MembershipType
     
     [Required]
     public bool IsActive { get; set; } = true;
+    
+    public ICollection<Membership> Memberships { get; set; } = new List<Membership>();
 }
 
 public enum MembershipCategory

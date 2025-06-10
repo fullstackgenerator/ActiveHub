@@ -1,0 +1,96 @@
+﻿@model ActiveHub.ViewModels.PurchaseViewModel
+@{
+    ViewData["Title"] = "Complete Your Purchase";
+}
+
+<section class="section form-page-content">
+    <div class="container">
+        <h1 class="text-center mb-5">Complete Your Purchase</h1>
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-lg p-4">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">Program Details</h2>
+                        <h3 class="text-center text-primary mb-3">@Model.MembershipType.Name</h3>
+                        <p class="text-muted text-center mb-4">@Model.MembershipType.Description</p>
+
+                        <ul class="list-group list-group-flush mb-4">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Price:
+                                <span class="fw-bold">@Model.MembershipType.Price.ToString("C2", System.Globalization.CultureInfo.GetCultureInfo("de-DE"))</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Category:
+                                <span>@Model.MembershipType.Category.ToString()</span>
+                            </li>
+                            @if (Model.MembershipType.DurationInDays.HasValue)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Duration:
+                                    <span>@((Model.MembershipType.DurationInDays.Value / 7) > 0 ? $"{Model.MembershipType.DurationInDays.Value / 7} Weeks" : $"{Model.MembershipType.DurationInDays.Value} Days")</span>
+                                </li>
+                            }
+                            @if (Model.MembershipType.MaxParticipants.HasValue)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Max Participants:
+                                    <span>@Model.MembershipType.MaxParticipants.Value</span>
+                                </li>
+                            }
+                     
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Estimated End Date:
+                                @{
+                                    DateTime estimatedEndDate;
+                                    //calculate estimated end date based on StartDate
+                                    if (Model.MembershipType.DurationInDays.HasValue && Model.MembershipType.DurationInDays.Value > 0)
+                                    {
+                                        estimatedEndDate = Model.StartDate.AddDays(Model.MembershipType.DurationInDays.Value);
+                                    }
+                                    else
+                                    {
+                                        estimatedEndDate = Model.StartDate.AddYears(1); // Default for Regular
+                                    }
+                                }
+                                <span>@estimatedEndDate.ToString("d")</span>
+                            </li>
+                        </ul>
+
+                        <form asp-controller="Pricing" asp-action="Enroll" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="membershipTypeId" value="@Model.MembershipType.Id" />
+
+                            <div class="mb-3">
+                                <label for="startDate" class="form-label">Choose Start Date:</label>
+                                <input asp-for="StartDate" type="date" class="form-control" min="@DateTime.Today.ToString("yyyy-MM-dd")" required /> @* Added min attribute for validation *!/
+                                @* validation span for a later option: <span asp-validation-for="StartDate" class="text-danger"></span> *@
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="paymentMethod" class="form-label">Select Payment Method:</label>
+                                <select name="paymentMethod" id="paymentMethod" class="form-select" required>
+                                    <option value="">-- Select --</option>
+                                    @foreach (var method in Model.PaymentMethods)
+                                    {
+                                        <option value="@method">@method.ToString()</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-success btn-lg w-100 mt-4">Confirm Purchase</button>
+                            <a asp-controller="Home" asp-action="Program" class="btn btn-outline-secondary w-100 mt-2">Cancel</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

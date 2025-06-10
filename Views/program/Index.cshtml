@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<ActiveHub.Models.MembershipType>
+@using ActiveHub.Models;
+@{
     ViewData["Title"] = "Our Programs - FitPro";
 }
 
@@ -9,135 +11,99 @@
     </div>
 </section>
 
+@* TempData messages here (kept for consistency) *@
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+@if (TempData["InfoMessage"] != null)
+{
+    <div class="alert alert-info" role="alert">
+        @TempData["InfoMessage"]
+    </div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
 <section class="section program-details">
     <div class="container">
-        <!-- Strength Training Program -->
-        <div class="program-container mb-5">
-            <div class="row g-4 align-items-center">
-                <div class="col-md-6">
-                    <img src="https://cdn.pixabay.com/photo/2017/08/07/14/02/man-2604149_1280.jpg" alt="Strength Training" class="img-fluid rounded shadow">
-                </div>
-                <div class="col-md-6">
-                    <h2 class="program-name">Strength Training</h2>
-                    <div class="program-meta mb-3">
-                        <span class="badge bg-primary me-2">12 Weeks</span>
-                        <span class="badge bg-success">199€</span>
+        <h2 class="section-title text-center mb-5">Specialized Training Programs</h2>
+      @*special programs loop*@
+        @foreach (var program in Model.Where(mt => mt.Category == MembershipCategory.Special).OrderBy(mt => mt.Id))
+        {
+            <div class="program-container mb-5">
+                <div class="row g-4 align-items-center">
+                    <div class="col-md-6 @(Model.ToList().IndexOf(program) % 2 != 0 ? "order-md-2" : "")">
+                        <img src="@(program.Name.Contains("Strength", StringComparison.OrdinalIgnoreCase) ? "https://cdn.pixabay.com/photo/2017/08/07/14/02/man-2604149_1280.jpg" :
+                                    (program.Name.Contains("HIIT", StringComparison.OrdinalIgnoreCase) ? "https://cdn.pixabay.com/photo/2018/04/05/17/21/kettlebell-3293475_1280.jpg" :
+                                    (program.Name.Contains("Flexibility", StringComparison.OrdinalIgnoreCase) ? "https://images.pexels.com/photos/414029/pexels-photo-414029.jpeg" : "https://via.placeholder.com/600x400.png?text=Program+Image")))"
+                             alt="@program.Name" class="img-fluid rounded shadow">
                     </div>
-                    <div class="program-description">
-                        <p>Our Strength Training program is designed to help you build lean muscle mass, increase strength, and improve overall body composition. This 12-week progressive program is suitable for all levels, from beginners to advanced lifters.</p>
-                        
-                        <h5 class="mt-4">Program Highlights:</h5>
-                        <ul class="program-features">
-                            <li><i class="fas fa-dumbbell me-2 text-primary"></i>3-5 customized workouts per week</li>
-                            <li><i class="fas fa-chart-line me-2 text-primary"></i>Progressive overload techniques</li>
-                            <li><i class="fas fa-utensils me-2 text-primary"></i>Nutrition guidelines for muscle gain</li>
-                            <li><i class="fas fa-user-tie me-2 text-primary"></i>Weekly check-ins with your coach</li>
-                            <li><i class="fas fa-file-alt me-2 text-primary"></i>Detailed workout tracking system</li>
-                        </ul>
-                        
-                        <div class="program-results mt-4">
-                            <h5>Expected Results:</h5>
-                            <div class="progress mt-2 mb-2">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">Strength Increase 85%</div>
-                            </div>
-                            <div class="progress mb-2">
-                                <div class="progress-bar bg-warning" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">Muscle Growth 70%</div>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar bg-success" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">Fat Loss 60%</div>
+                    <div class="col-md-6 @(Model.ToList().IndexOf(program) % 2 != 0 ? "order-md-1" : "")">
+                        <h2 class="program-name">@program.Name</h2>
+                        <div class="program-meta mb-3">
+                            @if (program.DurationInDays.HasValue && program.DurationInDays.Value > 0)
+                            {
+                                <span class="badge bg-primary me-2">@((program.DurationInDays.Value / 7) > 0 ? $"{program.DurationInDays.Value / 7} Weeks" : $"{program.DurationInDays.Value} Days")</span>
+                            }
+                            <span class="badge bg-success">@program.Price.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("de-DE"))</span>
+                        </div>
+                        <div class="program-description">
+                            <p>@program.Description</p>
+                            
+                            <h5 class="mt-4">Program Highlights:</h5>
+                            <ul class="program-features">
+                                @if (program.Name.Contains("Strength", StringComparison.OrdinalIgnoreCase)) {
+                                    <li><i class="fas fa-dumbbell me-2 text-primary"></i>3-5 customized workouts per week</li>
+                                    <li><i class="fas fa-chart-line me-2 text-primary"></i>Progressive overload techniques</li>
+                                    <li><i class="fas fa-utensils me-2 text-primary"></i>Nutrition guidelines for muscle gain</li>
+                                    <li><i class="fas fa-user-tie me-2 text-primary"></i>Weekly check-ins with your coach</li>
+                                    <li><i class="fas fa-file-alt me-2 text-primary"></i>Detailed workout tracking system</li>
+                                } else if (program.Name.Contains("HIIT", StringComparison.OrdinalIgnoreCase)) {
+                                    <li><i class="fas fa-bolt me-2 text-primary"></i>4-5 intense workouts per week (20-30 mins each)</li>
+                                    <li><i class="fas fa-fire me-2 text-primary"></i>Afterburn effect for continued calorie burn</li>
+                                    <li><i class="fas fa-heartbeat me-2 text-primary"></i>Cardiovascular endurance improvement</li>
+                                    <li><i class="fas fa-stopwatch me-2 text-primary"></i>Time-efficient workouts</li>
+                                    <li><i class="fas fa-home me-2 text-primary"></i>No equipment needed options</li>
+                                } else if (program.Name.Contains("Flexibility", StringComparison.OrdinalIgnoreCase)) {
+                                    <li><i class="fas fa-spa me-2 text-primary"></i>Daily 15-30 minute mobility routines</li>
+                                    <li><i class="fas fa-yin-yang me-2 text-primary"></i>Yoga and Pilates inspired movements</li>
+                                    <li><i class="fas fa-running me-2 text-primary"></i>Injury prevention techniques</li>
+                                    <li><i class="fas fa-brain me-2 text-primary"></i>Mind-body connection focus</li>
+                                    <li><i class="fas fa-bed me-2 text-primary"></i>Improved sleep and stress reduction</li>
+                                } else {
+                                    <li><i class="fas fa-check me-2 text-primary"></i>Custom highlights for @program.Name</li>
+                                }
+                            </ul>
+                            
+                            <div class="program-results mt-4">
+                                <h5>Expected Results:</h5>
+                                <div class="progress mt-2 mb-2">
+                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">Strength Increase 85%</div>
+                                </div>
+                                <div class="progress mb-2">
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100">Muscle Growth 70%</div>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">Fat Loss 60%</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <a href="/register" class="btn btn-primary mt-3">Enroll Now</a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- HIIT Workouts Program -->
-        <div class="program-container mb-5">
-            <div class="row g-4 align-items-center">
-                <div class="col-md-6 order-md-2">
-                    <img src="https://cdn.pixabay.com/photo/2018/04/05/17/21/kettlebell-3293475_1280.jpg" alt="HIIT Workouts" class="img-fluid rounded shadow">
-                </div>
-                <div class="col-md-6 order-md-1">
-                    <h2 class="program-name">HIIT Workouts</h2>
-                    <div class="program-meta mb-3">
-                        <span class="badge bg-primary me-2">8 Weeks</span>
-                        <span class="badge bg-success">149€</span>
-                    </div>
-                    <div class="program-description">
-                        <p>Our High-Intensity Interval Training (HIIT) program is designed to maximize fat burning and cardiovascular health in minimal time. This 8-week program combines short bursts of intense exercise with recovery periods to boost metabolism and endurance.</p>
                         
-                        <h5 class="mt-4">Program Highlights:</h5>
-                        <ul class="program-features">
-                            <li><i class="fas fa-bolt me-2 text-primary"></i>4-5 intense workouts per week (20-30 mins each)</li>
-                            <li><i class="fas fa-fire me-2 text-primary"></i>Afterburn effect for continued calorie burn</li>
-                            <li><i class="fas fa-heartbeat me-2 text-primary"></i>Cardiovascular endurance improvement</li>
-                            <li><i class="fas fa-stopwatch me-2 text-primary"></i>Time-efficient workouts</li>
-                            <li><i class="fas fa-home me-2 text-primary"></i>No equipment needed options</li>
-                        </ul>
-                        
-                        <div class="program-results mt-4">
-                            <h5>Expected Results:</h5>
-                            <div class="progress mt-2 mb-2">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">Fat Loss 90%</div>
-                            </div>
-                            <div class="progress mb-2">
-                                <div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">Endurance 80%</div>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar bg-warning" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Muscle Growth 40%</div>
-                            </div>
+                        <div class="mt-auto text-center">
+                            <partial name="_EnrollButtonPartial" model="program" />
                         </div>
                     </div>
-                    <a href="/register" class="btn btn-primary mt-3">Enroll Now</a>
                 </div>
             </div>
-        </div>
+        }
         
-        <!-- Flexibility & Balance Program -->
-        <div class="program-container mb-5">
-            <div class="row g-4 align-items-center">
-                <div class="col-md-6">
-                    <img src="https://images.pexels.com/photos/414029/pexels-photo-414029.jpeg" alt="Flexibility & Balance" class="img-fluid rounded shadow">
-                </div>
-                <div class="col-md-6">
-                    <h2 class="program-name">Flexibility & Balance</h2>
-                    <div class="program-meta mb-3">
-                        <span class="badge bg-primary me-2">6 Weeks</span>
-                        <span class="badge bg-success">129€</span>
-                    </div>
-                    <div class="program-description">
-                        <p>Our Flexibility & Balance program focuses on improving range of motion, reducing injury risk, and enhancing overall body control. This 6-week program incorporates yoga, Pilates, and mobility exercises to help you move better in daily life and sports.</p>
-                        
-                        <h5 class="mt-4">Program Highlights:</h5>
-                        <ul class="program-features">
-                            <li><i class="fas fa-spa me-2 text-primary"></i>Daily 15-30 minute mobility routines</li>
-                            <li><i class="fas fa-yin-yang me-2 text-primary"></i>Yoga and Pilates inspired movements</li>
-                            <li><i class="fas fa-running me-2 text-primary"></i>Injury prevention techniques</li>
-                            <li><i class="fas fa-brain me-2 text-primary"></i>Mind-body connection focus</li>
-                            <li><i class="fas fa-bed me-2 text-primary"></i>Improved sleep and stress reduction</li>
-                        </ul>
-                        
-                        <div class="program-results mt-4">
-                            <h5>Expected Results:</h5>
-                            <div class="progress mt-2 mb-2">
-                                <div class="progress-bar bg-success" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100">Flexibility 95%</div>
-                            </div>
-                            <div class="progress mb-2">
-                                <div class="progress-bar bg-primary" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">Balance 85%</div>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar bg-info" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Stress Reduction 75%</div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="/register" class="btn btn-primary mt-3">Enroll Now</a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Membership Options -->
         <div class="program-container">
             <div class="row">
                 <div class="col-12">
@@ -145,95 +111,31 @@
                 </div>
             </div>
             
-            <div class="row g-4">
-                <!-- Daily Pass -->
-                <div class="col-md-3">
-                    <div class="card membership-card h-100">
-                        <div class="card-header bg-primary text-white text-center py-3">
-                            <h3 class="mb-0">Daily Pass</h3>
-                        </div>
-                        <div class="card-body text-center">
-                            <h4 class="card-title pricing-card-title">15€</h4>
-                            <ul class="list-unstyled mt-3 mb-4">
-                                <li><i class="fas fa-check text-success me-2"></i>Unlimited access for 1 day</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Use of all facilities</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Free locker usage</li>
-                                <li><i class="fas fa-times text-danger me-2"></i>No class bookings</li>
-                                <li><i class="fas fa-times text-danger me-2"></i>No personal training</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer bg-transparent text-center">
-                            <a href="/register" class="btn btn-outline-primary w-100">Choose Plan</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Weekly Pass -->
-                <div class="col-md-3">
-                    <div class="card membership-card h-100">
-                        <div class="card-header bg-warning text-dark text-center py-3">
-                            <h3 class="mb-0">Weekly Pass</h3>
-                        </div>
-                        <div class="card-body text-center">
-                            <h4 class="card-title pricing-card-title">50€</h4>
-                            <ul class="list-unstyled mt-3 mb-4">
-                                <li><i class="fas fa-check text-success me-2"></i>Unlimited access for 7 days</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Use of all facilities</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Free locker usage</li>
-                                <li><i class="fas fa-check text-success me-2"></i>2 group classes included</li>
-                                <li><i class="fas fa-times text-danger me-2"></i>No personal training</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer bg-transparent text-center">
-                            <a href="/register" class="btn btn-outline-warning w-100">Choose Plan</a>
+            <div class="row g-4 justify-content-center">
+                @*regular programs loop*@
+                @foreach (var membership in Model.Where(mt => mt.Category == MembershipCategory.Regular).OrderBy(mt => mt.Price))
+                {
+                    <div class="col-md-3">
+                        <div class="card membership-card h-100 shadow-sm">
+                            <div class="card-header @(membership.Name.Contains("Daily", StringComparison.OrdinalIgnoreCase) ? "bg-primary" : membership.Name.Contains("Weekly", StringComparison.OrdinalIgnoreCase) ? "bg-warning text-dark" : membership.Name.Contains("Monthly", StringComparison.OrdinalIgnoreCase) ? "bg-success" : "bg-danger") text-white text-center py-3">
+                                <h3 class="mb-0">@membership.Name</h3>
+                            </div>
+                            <div class="card-body text-center d-flex flex-column">
+                                <h4 class="card-title pricing-card-title">@membership.Price.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("de-DE"))</h4>
+                                @if (membership.Name.Contains("Annual", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <p class="text-muted"><small>Save 30% compared to monthly</small></p>
+                                }
+                                <ul class="list-unstyled mt-3 mb-4 flex-grow-1">
+                                    <li><i class="fas fa-check text-success me-2"></i>@membership.Description</li>
+                                </ul>
+                            </div>
+                            <div class="card-footer bg-transparent text-center">
+                                <partial name="_EnrollButtonPartial" model="membership"/>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Monthly Membership -->
-                <div class="col-md-3">
-                    <div class="card membership-card h-100">
-                        <div class="card-header bg-success text-white text-center py-3">
-                            <h3 class="mb-0">Monthly</h3>
-                        </div>
-                        <div class="card-body text-center">
-                            <h4 class="card-title pricing-card-title">120€</h4>
-                            <ul class="list-unstyled mt-3 mb-4">
-                                <li><i class="fas fa-check text-success me-2"></i>Unlimited monthly access</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Use of all facilities</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Free locker usage</li>
-                                <li><i class="fas fa-check text-success me-2"></i>8 group classes included</li>
-                                <li><i class="fas fa-check text-success me-2"></i>1 personal training session</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer bg-transparent text-center">
-                            <a href="/register" class="btn btn-outline-success w-100">Choose Plan</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Annual Membership -->
-                <div class="col-md-3">
-                    <div class="card membership-card h-100">
-                        <div class="card-header bg-danger text-white text-center py-3">
-                            <h3 class="mb-0">Annual</h3>
-                        </div>
-                        <div class="card-body text-center">
-                            <h4 class="card-title pricing-card-title">999€</h4>
-                            <p class="text-muted"><small>Save 30% compared to monthly</small></p>
-                            <ul class="list-unstyled mt-3 mb-4">
-                                <li><i class="fas fa-check text-success me-2"></i>Unlimited annual access</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Use of all facilities</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Free locker usage</li>
-                                <li><i class="fas fa-check text-success me-2"></i>Unlimited group classes</li>
-                                <li><i class="fas fa-check text-success me-2"></i>12 personal training sessions</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer bg-transparent text-center">
-                            <a href="/register" class="btn btn-outline-danger w-100">Choose Plan</a>
-                        </div>
-                    </div>
-                </div>
+                }
             </div>
         </div>
     </div>

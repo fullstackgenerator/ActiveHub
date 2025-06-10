@@ -44,7 +44,7 @@ public class Membership
 
 public enum PaymentMethod
 {
-    Cash,
+    Banktransfer,
     CreditCard,
     DebitCard
 }
