@@ -32,14 +32,14 @@
                 <span>Dashboard</span>
             </a>
         </li>
-
         <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" asp-controller="Account" asp-action="ChangePassword">
                 <i class="fas fa-fw fa-cog"></i>
                 <span>Settings</span>
             </a>
         </li>
-
+        
+        
         <li class="nav-item">
             <form asp-controller="Account" asp-action="Logout" method="post" class="nav-link">
                 @Html.AntiForgeryToken()
