@@ -175,3 +175,48 @@ body {
 #content {
     flex-grow: 1;
 }
+
+.membership-card {
+    background: linear-gradient(135deg, var(--sb-admin-success) 0%, #198754 100%);
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+    margin-top: -1rem;
+}
+
+
+.membership-card .card-body {
+    padding: 2rem;
+}
+
+.card:hover,
+.membership-card:hover {
+    transform: none !important;
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
+}
+
+.membership-card h5 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.membership-entry {
+    background-color: white;
+    color: var(--sb-admin-gray-900);
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
+}
+
+.membership-entry h6 {
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+    color: var(--sb-admin-gray-900);
+}
+
+.membership-entry small {
+    color: var(--sb-admin-gray-600);
+}

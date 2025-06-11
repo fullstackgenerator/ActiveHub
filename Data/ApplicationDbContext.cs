@@ -35,23 +35,23 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 Id = 2,
                 Name = "Weekly Pass",
                 Description = "Weekly access to all gym facilities",
-                Price = 70.00m,
+                Price = 60.00m,
                 Category = MembershipCategory.Regular,
                 DurationInDays = 7
             },
             new MembershipType
             {
                 Id = 3,
-                Name = "Monthly Membership",
+                Name = "Monthly Pass",
                 Description = "Unlimited access for one month",
-                Price = 60.00m,
+                Price = 190.00m,
                 Category = MembershipCategory.Regular,
                 DurationInDays = 31
             },
             new MembershipType
             {
                 Id = 4,
-                Name = "Yearly Membership",
+                Name = "Yearly Pass",
                 Description = "Unlimited access for one year",
                 Price = 650.00m,
                 Category = MembershipCategory.Regular,

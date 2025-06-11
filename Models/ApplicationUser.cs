@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
 namespace ActiveHub.Models;
 
@@ -29,4 +30,6 @@ public class ApplicationUser : IdentityUser
     
     [PersonalData]
     public string? City { get; set; }
+    
+    ICollection<Membership> Memberships { get; set; }
 }

@@ -1,27 +1,42 @@
-﻿@{
+﻿@model IEnumerable<ActiveHub.Models.Membership>
+
+@{
     ViewData["Title"] = "Dashboard";
     Layout = "_DashboardLayout";
 }
 
-<div class="row">
-
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                            Active Programs
-                        </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">Strength Training</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">HITT</div>
+<div class="row justify-content-center">
+    <div class="col-xl-6 col-lg-8 col-md-10 mb-4">
+        <div class="card membership-card">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div>
+                        <h5 class="text-uppercase fw-bold mb-1">Active Programs</h5>
+                        <p class="mb-0 text-gray-800">Your current memberships</p>
                     </div>
-                    <div class="col-auto">
-                        <i class="fas fa-dumbbell fa-2x text-gray-300"></i>
+                    <div>
+                        <i class="fas fa-dumbbell fa-3x text-white-50"></i>
                     </div>
                 </div>
+
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var membership in Model)
+                    {
+                        <div class="membership-entry">
+                            <h6 class="mb-1 fw-bold">@membership.MembershipType.Name</h6>
+                            <small class="text-muted">Expires: @membership.EndDate.ToShortDateString()</small>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="membership-entry">
+                        <h6 class="mb-1 fw-bold">No active programs.</h6>
+                        <small class="text-muted">Explore our <a href="/Program" class="text-success fw-semibold">programs</a>!</small>
+                    </div>
+                }
             </div>
         </div>
     </div>
-
 </div>

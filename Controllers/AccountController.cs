@@ -1,4 +1,5 @@
-﻿using ActiveHub.Models;
+﻿using ActiveHub.Data;
+using ActiveHub.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,13 +11,16 @@ public class AccountController : Controller
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly ApplicationDbContext _context;
     
     public AccountController(
         UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager)
+        SignInManager<ApplicationUser> signInManager,
+        ApplicationDbContext context)
     {
         _signInManager = signInManager;
         _userManager = userManager;
+        _context = context;
     }
 
     [HttpGet]
@@ -77,9 +81,11 @@ public class AccountController : Controller
     public async Task<IActionResult> Dashboard()
     {
         var userId = _userManager.GetUserId(User);
-        var userName = User.Identity.Name;
-        var currentUser = await _userManager.GetUserAsync(User);
+        var userMembership = await _context.Memberships
+            .Where(m=>m.UserId == userId && m.EndDate >= DateTime.UtcNow)
+            .Include(m => m.MembershipType)
+            .ToListAsync();
 
-        return View();
+        return View(userMembership);
     }
 }
