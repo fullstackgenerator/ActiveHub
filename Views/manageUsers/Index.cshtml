@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ActiveHub.Models.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Users management";
+    Layout = "_DashboardLayoutAdmin";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Users</h2>
+</div>
+
+<table class="table table-hover table-hover shadow-sm">
+    <thead class="table-light">
+    <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Phone Number</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @if (Model != null)
+    {
+        @foreach (var userEntry in Model)
+        {
+            <tr>
+                <td>@userEntry.FirstName</td>
+                <td>@userEntry.LastName</td>
+                <td>@userEntry.Email</td>
+                <td>@userEntry.PhoneNumber</td>
+                <td>
+                    <a class="btn btn-primary btn-sm me-1" asp-action="Details" asp-controller="ManageUsers" asp-route-id="@userEntry.Id">Details</a>
+                </td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="5">No users found.</td>
+        </tr>
+    }
+    </tbody>
+</table>

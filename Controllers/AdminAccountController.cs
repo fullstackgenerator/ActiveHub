@@ -4,16 +4,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 namespace ActiveHub.Controllers;
 
-public class AccountController : Controller
+public class AdminAccountController : Controller
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ApplicationDbContext _context;
 
-    public AccountController(
+    public AdminAccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         ApplicationDbContext context)
@@ -32,7 +31,7 @@ public class AccountController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(Login model, string? returnUrl = null)
+    public async Task<IActionResult> Login(AdminLogin  model, string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
         if (!ModelState.IsValid) return View(model);
@@ -57,7 +56,7 @@ public class AccountController : Controller
                 return Redirect(returnUrl);
             }
 
-            return RedirectToAction("Dashboard", "Account");
+            return RedirectToAction("Dashboard", "AdminAccount"); 
         }
         else if (result.IsLockedOut)
         {
@@ -83,13 +82,17 @@ public class AccountController : Controller
     [Authorize]
     public async Task<IActionResult> Dashboard()
     {
-        var userId = _userManager.GetUserId(User);
-        var userMembership = await _context.Memberships
-            .Where(m => m.UserId == userId && m.EndDate >= DateTime.UtcNow)
-            .Include(m => m.MembershipType)
-            .ToListAsync();
+   
+        var viewModel = new AdminDashboard
+        {
+            TotalUsers = await _userManager.Users.CountAsync(),
+            NewUsersToday = 5,
+            ActiveMemberships = 150,
+            ExpiringMembershipsThisWeek = 10,
+            LockedOutUsers = 2
+        };
 
-        return View(userMembership);
+        return View(viewModel);
     }
 
     [HttpGet]

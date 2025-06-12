@@ -1,0 +1,46 @@
+﻿@model ActiveHub.Models.AdminLogin
+
+@{
+    ViewData["Title"] = "Login - ActiveHub Admin";
+}
+
+<section class="section">
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-6">
+                <h2 class="text-center mb-4">Log in to your Admin Account</h2>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form asp-controller="AdminAccount" asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]" method="post"> @* Remove mt-4 here if card-body already has padding *@
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            @Html.AntiForgeryToken()
+
+                            <div class="mb-3">
+                                <input asp-for="Email" class="form-control" type="email" placeholder="Your email address" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <input asp-for="Password" class="form-control" type="password" placeholder="Your password" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input asp-for="RememberMe" class="form-check-input" />
+                                <label asp-for="RememberMe" class="form-check-label"></label>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary">Log In</button>
+                            </div>
+
+                            @* <p class="text-center mt-2">
+                                <a asp-controller="AdminAccount" asp-action="ForgotPassword">Forgot your password?</a>
+                            </p> *@
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
