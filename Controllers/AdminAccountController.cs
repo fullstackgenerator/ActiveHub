@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 namespace ActiveHub.Controllers;
 
 public class AdminAccountController : Controller
@@ -31,7 +32,7 @@ public class AdminAccountController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(AdminLogin  model, string? returnUrl = null)
+    public async Task<IActionResult> Login(AdminLogin model, string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
         if (!ModelState.IsValid) return View(model);
@@ -56,7 +57,7 @@ public class AdminAccountController : Controller
                 return Redirect(returnUrl);
             }
 
-            return RedirectToAction("Dashboard", "AdminAccount"); 
+            return RedirectToAction("Dashboard", "AdminAccount");
         }
         else if (result.IsLockedOut)
         {
@@ -82,14 +83,37 @@ public class AdminAccountController : Controller
     [Authorize]
     public async Task<IActionResult> Dashboard()
     {
-   
+        var today = DateTime.Today; // Only date part
+        var endOfWeek = today.AddDays(7);
+
+        //fetch the data dynamically
+        var totalUsers = await _userManager.Users.CountAsync();
+
+        var newUsersTodayCount = await _userManager.Users
+            .CountAsync(u => u.RegistrationDate.HasValue && u.RegistrationDate.Value.Date == today.Date);
+
+        var activeMemberships = await _context.Memberships
+            .CountAsync(m => m.StartDate <= today && m.EndDate >= today);
+
+        var expiringMembershipsThisWeek = await _context.Memberships
+            .CountAsync(m => m.EndDate >= today && m.EndDate <= endOfWeek);
+
+        var utcNow = DateTimeOffset.UtcNow;
+
+        var lockedOutUsers = await _userManager.Users
+            .Where(u => u.LockoutEnd.HasValue)
+            .ToListAsync();
+
+        var lockedOutUsersCount = lockedOutUsers
+            .Count(u => u.LockoutEnd > utcNow);
+
         var viewModel = new AdminDashboard
         {
-            TotalUsers = await _userManager.Users.CountAsync(),
-            NewUsersToday = 5,
-            ActiveMemberships = 150,
-            ExpiringMembershipsThisWeek = 10,
-            LockedOutUsers = 2
+            TotalUsers = totalUsers,
+            NewUsersToday = newUsersTodayCount,
+            ActiveMemberships = activeMemberships,
+            ExpiringMembershipsThisWeek = expiringMembershipsThisWeek,
+            LockedOutUsers = lockedOutUsersCount
         };
 
         return View(viewModel);
@@ -101,20 +125,20 @@ public class AdminAccountController : Controller
     {
         return View();
     }
-    
+
     [HttpPost]
     [Authorize]
     public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
     {
-        
         if (!ModelState.IsValid) return View(model);
-        
+
         var user = await _userManager.GetUserAsync(User);
         if (user == null)
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
         }
+
         var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
         if (result.Succeeded)
         {
@@ -130,6 +154,7 @@ public class AdminAccountController : Controller
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
+
             return View(model);
         }
     }

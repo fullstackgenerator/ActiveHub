@@ -16,6 +16,11 @@ public class ApplicationUser : IdentityUser
     [PersonalData]
     public string LastName { get; set; }
     
+    [Display(Name = "Registration Date")]
+    [DataType(DataType.DateTime)]
+    [PersonalData]
+    public DateTime? RegistrationDate { get; set; }
+    
     [Display(Name = "Date of Birth")]
     [DataType(DataType.Date)]
     [PersonalData]

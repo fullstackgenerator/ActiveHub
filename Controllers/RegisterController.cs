@@ -29,23 +29,24 @@ public class RegisterController : Controller
     {
         if (!ModelState.IsValid) return View(model);
 
-        var user = new ApplicationUser 
+        var user = new ApplicationUser
         {
             UserName = model.Email,
             Email = model.Email,
             FirstName = model.FirstName,
-            LastName = model.LastName
+            LastName = model.LastName,
+            RegistrationDate = DateTime.UtcNow
         };
-    
+
         var result = await _userManager.CreateAsync(user, model.Password);
-    
+
         if (!result.Succeeded)
         {
             foreach (var error in result.Errors)
                 ModelState.AddModelError(string.Empty, error.Description);
             return View(model);
         }
-    
+
         await _signInManager.SignInAsync(user, isPersistent: false);
         return RedirectToAction("Index", "Home");
     }
