@@ -23,6 +23,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
         options.Password.RequireNonAlphanumeric = false;
         options.Password.RequiredLength = 6;
     })
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
@@ -54,5 +55,40 @@ app.MapControllerRoute(
 
 app.MapRazorPages()
     .WithStaticAssets();
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
+    string adminRoleName = "Admin";
+
+    //create admin role if it doesn't exist
+    if (!await roleManager.RoleExistsAsync(adminRoleName))
+    {
+        await roleManager.CreateAsync(new IdentityRole(adminRoleName));
+    }
+
+    //create a default "SuperAdmin" user
+    string superAdminEmail = "admin@fitpro.com";
+    string superAdminPassword = "Sekret7!";
+
+    var superAdminUser = await userManager.FindByEmailAsync(superAdminEmail);
+
+    if (superAdminUser == null)
+    {
+        superAdminUser = new ApplicationUser
+        {
+            UserName = superAdminEmail,
+            Email = superAdminEmail,
+            FirstName = "Super",
+            LastName = "Admin"
+        };
+        var createUserResult = await userManager.CreateAsync(superAdminUser, superAdminPassword);
+
+        if (createUserResult.Succeeded)
+        {
+            await userManager.AddToRoleAsync(superAdminUser, adminRoleName);
+        }
+    }
+}
 app.Run();
