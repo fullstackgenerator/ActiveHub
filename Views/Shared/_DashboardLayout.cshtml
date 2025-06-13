@@ -33,12 +33,18 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" asp-controller="Account" asp-action="ChangePassword">
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSettings"
+               aria-expanded="true" aria-controls="collapseSettings">
                 <i class="fas fa-fw fa-cog"></i>
                 <span>Settings</span>
             </a>
+            <div id="collapseSettings" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="py-2 collapse-inner rounded">
+                    <a class="collapse-item" asp-controller="Account" asp-action="Edit">Edit Profile</a>
+                    <a class="collapse-item" asp-controller="Account" asp-action="ChangePassword">Change Password</a>
+                </div>
+            </div>
         </li>
-        
         
         <li class="nav-item">
             <form asp-controller="Account" asp-action="Logout" method="post" class="nav-link">
