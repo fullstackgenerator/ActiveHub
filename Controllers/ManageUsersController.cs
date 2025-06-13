@@ -89,7 +89,7 @@ public class ManageUsersController : Controller
 
             if (addToRoleResult.Succeeded)
             {
-                TempData["SuccessMessage"] =
+                TempData["AdminCreationSuccessMessage"] =
                     $"Admin user '{user.Email}' created and assigned 'Admin' role successfully.";
                 return RedirectToAction(nameof(Index));
             }
@@ -110,5 +110,56 @@ public class ManageUsersController : Controller
         }
 
         return View(model);
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Edit(string id)
+    {
+        if (string.IsNullOrEmpty(id)) return BadRequest();
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null) return NotFound();
+        var userRoles = await _userManager.GetRolesAsync(user);
+        ViewBag.UserRoles = userRoles;
+        return View(user);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            TempData["ErrorMessage"] = "User ID cannot be null or empty.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            TempData["ErrorMessage"] = "User not found.";
+            return NotFound();
+        }
+
+        //prevent deleting the initial superadmin
+        if (user.Email == "admin@fitpro.com")
+        {
+            TempData["ErrorMessage"] = "The primary admin account cannot be deleted.";
+            return RedirectToAction(nameof(Details), new { id = user.Id });
+        }
+
+        var result = await _userManager.DeleteAsync(user);
+
+        if (result.Succeeded)
+        {
+            TempData["UserDeleteSuccessMessage"] = $"User '{user.Email}' deleted successfully.";
+        }
+        else
+        {
+            TempData["UserDeleteErrorMessage"] =
+                "Error deleting user: " + string.Join(", ", result.Errors.Select(e => e.Description));
+        }
+
+        return RedirectToAction(nameof(Index));
     }
 }

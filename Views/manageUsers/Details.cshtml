@@ -1,0 +1,38 @@
+﻿@model ActiveHub.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "User details";
+    Layout = "_DashboardLayoutAdmin";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>User Details</h4>
+    <div>
+        <a class="btn btn-outline-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+        <form asp-action="DeleteConfirmed" asp-route-id="@Model.Id" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-outline-danger">Delete</button>
+            @Html.AntiForgeryToken()
+        </form>
+        <a class="btn btn-outline-secondary ms-2" asp-action="Index">Back to Users</a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">User ID: @Model.Id</h5>
+        <p class="card-text">
+            <strong>First Name:</strong> @Model.FirstName<br>
+            <strong>Last Name:</strong> @Model.LastName<br>
+            <strong>Email:</strong> @Model.Email<br>
+            <strong>Registration Date:</strong> @Model.RegistrationDate <br>
+            <strong>City:</strong> @Model.City <br>
+            <strong>Postal Code:</strong> @Model.PostNumber <br>
+            <strong>Phone Number:</strong> @Model.PhoneNumber <br>
+            <strong>Account Locked Out:</strong> @(Model.LockoutEnd.HasValue && Model.LockoutEnd > DateTimeOffset.UtcNow ? "Yes" : "No")<br> @* Display lockout status *@
+            @if (ViewBag.UserRoles != null && ((IEnumerable<string>)ViewBag.UserRoles).Any())
+            {
+                <strong>Roles:</strong> @string.Join(", ", (IEnumerable<string>)ViewBag.UserRoles)<br>
+            }
+        </p>
+    </div>
+</div>

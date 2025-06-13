@@ -118,8 +118,8 @@ public class AccountController : Controller
             await _signInManager.SignOutAsync();
             await _signInManager.SignInAsync(user, isPersistent: false);
 
-            TempData["SuccessMessage"] = "Password changed successfully.";
-            return RedirectToAction("Dashboard");
+            TempData["PasswordChangeSuccessMessage"] = "Password changed successfully.";
+        return RedirectToAction("Dashboard");
         }
         else
         {
@@ -127,6 +127,7 @@ public class AccountController : Controller
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
+            TempData["PasswordChangeErrorMessage"] = "Failed to change password.";
             return View(model);
         }
     }
