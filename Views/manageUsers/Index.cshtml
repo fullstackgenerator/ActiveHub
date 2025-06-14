@@ -8,7 +8,16 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold">Users</h2>
 </div>
-
+<form class="row g-3 align-items-end" method="get">
+    <div class="col-md-4 my-4">
+        <input class="form-control" type="search" name="searchString"
+               value="@Context.Request.Query["searchString"]" placeholder="Search users"/>
+    </div>
+    <div class="col-md-4 my-4">
+        <button class="btn btn-sm btn-outline-success" type="submit">Search</button>
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Index">Clear</a>
+    </div>
+</form>
 <table class="table table-hover table-hover shadow-sm">
     <thead class="table-light">
     <tr>
@@ -26,7 +35,7 @@
                 <td>@userEntry.FirstName</td>
                 <td>@userEntry.LastName</td>
                 <td>
-                    <a class="btn btn-primary btn-sm me-1" asp-action="Details" asp-controller="ManageUsers" asp-route-id="@userEntry.Id">Details</a>
+                    <a class="btn btn-sm btn-primary me-1" asp-action="Details" asp-controller="ManageUsers" asp-route-id="@userEntry.Id">Details</a>
                 </td>
             </tr>
         }

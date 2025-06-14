@@ -25,10 +25,23 @@ public class ManageUsersController : Controller
     }
 
     // GET: ManageUsers
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string searchString)
     {
-        var allUsers = await _userManager.Users.ToListAsync();
-        return View(allUsers);
+        var users = _userManager.Users.AsQueryable();
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            users = users.Where(u =>
+                u.FirstName.Contains(searchString) ||
+                u.LastName.Contains(searchString) ||
+                u.Email.Contains(searchString) ||
+                u.UserName.Contains(searchString)
+            );
+        }
+
+        var filteredUsers = await users.ToListAsync();
+
+        return View(filteredUsers);
     }
 
     // GET: ManageUsers/Details/{id}
@@ -45,7 +58,7 @@ public class ManageUsersController : Controller
         {
             return NotFound();
         }
-        
+
         var userRoles = await _userManager.GetRolesAsync(user);
         ViewBag.UserRoles = userRoles;
 
@@ -58,7 +71,7 @@ public class ManageUsersController : Controller
     {
         return View();
     }
-    
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateAdmin(AdminRegister model)
@@ -114,7 +127,7 @@ public class ManageUsersController : Controller
 
         return View(model);
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> Edit(string id)
     {
@@ -122,13 +135,13 @@ public class ManageUsersController : Controller
         {
             return NotFound();
         }
-        
+
         var user = await _userManager.FindByIdAsync(id);
         if (user == null)
         {
             return NotFound();
         }
-        
+
         var viewModel = new EditUserProfile
         {
             Id = user.Id,
@@ -141,10 +154,10 @@ public class ManageUsersController : Controller
             PostNumber = user.PostNumber,
             City = user.City
         };
-        
+
         return View(viewModel);
     }
-    
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(EditUserProfile model)
@@ -153,15 +166,14 @@ public class ManageUsersController : Controller
         {
             return View(model);
         }
-        
+
         var user = await _userManager.FindByIdAsync(model.Id);
         if (user == null)
         {
-
             TempData["ProfileEditErrorMessage"] = "User not found or was deleted.";
             return RedirectToAction(nameof(Index));
         }
-        
+
         user.FirstName = model.FirstName;
         user.LastName = model.LastName;
         user.PhoneNumber = model.PhoneNumber;
@@ -169,7 +181,7 @@ public class ManageUsersController : Controller
         user.Address = model.Address;
         user.PostNumber = model.PostNumber;
         user.City = model.City;
-        
+
         var updateResult = await _userManager.UpdateAsync(user);
 
         if (updateResult.Succeeded)
@@ -183,10 +195,11 @@ public class ManageUsersController : Controller
             {
                 ModelState.AddModelError(string.Empty, $"Error updating profile: {error.Description}");
             }
+
             return View(model);
         }
     }
-    
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(string id)
@@ -204,6 +217,7 @@ public class ManageUsersController : Controller
                 TempData["ErrorMessage"] = "Error deleting user.";
             }
         }
+
         return RedirectToAction(nameof(Index));
     }
 }
