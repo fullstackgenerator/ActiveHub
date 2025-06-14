@@ -52,6 +52,13 @@ public class AdminAccountController : Controller
 
         if (result.Succeeded)
         {
+            if (!await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                await _signInManager.SignOutAsync();
+                ModelState.AddModelError(string.Empty, "Only administrators are allowed to log in here.");
+                return View(model);
+            }
+
             if (Url.IsLocalUrl(returnUrl)) //validate return urls for security
             {
                 return Redirect(returnUrl);
@@ -80,7 +87,7 @@ public class AdminAccountController : Controller
     }
 
     [HttpGet]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Dashboard()
     {
         var today = DateTime.Today; // Only date part

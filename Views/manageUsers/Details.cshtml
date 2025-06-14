@@ -25,7 +25,7 @@
             <strong>First Name:</strong> @Model.FirstName<br>
             <strong>Last Name:</strong> @Model.LastName<br>
             <strong>Email:</strong> @Model.Email<br>
-            <strong>Registration Date:</strong> @Model.RegistrationDate <br>
+            <strong>Registration Date:</strong> @Model.RegistrationDate?.ToShortDateString()<br>
             <strong>City:</strong> @Model.City <br>
             <strong>Postal Code:</strong> @Model.PostNumber <br>
             <strong>Phone Number:</strong> @Model.PhoneNumber <br>

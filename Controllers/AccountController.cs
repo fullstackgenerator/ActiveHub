@@ -52,6 +52,13 @@ public class AccountController : Controller
 
         if (result.Succeeded)
         {
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                await _signInManager.SignOutAsync();
+                ModelState.AddModelError(string.Empty, "Administrators must log in via the admin portal.");
+                return View(model);
+            }
+
             if (Url.IsLocalUrl(returnUrl)) //validate return urls for security
             {
                 return Redirect(returnUrl);
