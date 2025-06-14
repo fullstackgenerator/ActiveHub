@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
+
 
 namespace ActiveHub.Controllers;
 
@@ -24,12 +24,14 @@ public class ManageUsersController : Controller
         _roleManager = roleManager;
     }
 
+    // GET: ManageUsers
     public async Task<IActionResult> Index()
     {
         var allUsers = await _userManager.Users.ToListAsync();
         return View(allUsers);
     }
 
+    // GET: ManageUsers/Details/{id}
     public async Task<IActionResult> Details(string id)
     {
         if (id == null)
@@ -43,19 +45,20 @@ public class ManageUsersController : Controller
         {
             return NotFound();
         }
-
+        
         var userRoles = await _userManager.GetRolesAsync(user);
         ViewBag.UserRoles = userRoles;
 
         return View(user);
     }
 
+    // GET: ManageUsers/CreateAdmin
     [HttpGet]
     public IActionResult CreateAdmin()
     {
         return View();
     }
-
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateAdmin(AdminRegister model)
@@ -78,7 +81,7 @@ public class ManageUsersController : Controller
 
         if (result.Succeeded)
         {
-            //check if admin role exists, create it if not
+            //check if Admin role exists, create it if not
             if (!await _roleManager.RoleExistsAsync("Admin"))
             {
                 await _roleManager.CreateAsync(new IdentityRole("Admin"));
@@ -89,7 +92,7 @@ public class ManageUsersController : Controller
 
             if (addToRoleResult.Succeeded)
             {
-                TempData["AdminCreationSuccessMessage"] =
+                TempData["SuccessMessage"] =
                     $"Admin user '{user.Email}' created and assigned 'Admin' role successfully.";
                 return RedirectToAction(nameof(Index));
             }
@@ -111,55 +114,96 @@ public class ManageUsersController : Controller
 
         return View(model);
     }
-
+    
     [HttpGet]
-    [Authorize]
     public async Task<IActionResult> Edit(string id)
     {
-        if (string.IsNullOrEmpty(id)) return BadRequest();
+        if (id == null)
+        {
+            return NotFound();
+        }
+        
         var user = await _userManager.FindByIdAsync(id);
-        if (user == null) return NotFound();
-        var userRoles = await _userManager.GetRolesAsync(user);
-        ViewBag.UserRoles = userRoles;
-        return View(user);
+        if (user == null)
+        {
+            return NotFound();
+        }
+        
+        var viewModel = new EditUserProfile
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber,
+            DateOfBirth = user.DateOfBirth,
+            Address = user.Address,
+            PostNumber = user.PostNumber,
+            City = user.City
+        };
+        
+        return View(viewModel);
     }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(EditUserProfile model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+        
+        var user = await _userManager.FindByIdAsync(model.Id);
+        if (user == null)
+        {
 
+            TempData["ProfileEditErrorMessage"] = "User not found or was deleted.";
+            return RedirectToAction(nameof(Index));
+        }
+        
+        user.FirstName = model.FirstName;
+        user.LastName = model.LastName;
+        user.PhoneNumber = model.PhoneNumber;
+        user.DateOfBirth = model.DateOfBirth;
+        user.Address = model.Address;
+        user.PostNumber = model.PostNumber;
+        user.City = model.City;
+        
+        var updateResult = await _userManager.UpdateAsync(user);
+
+        if (updateResult.Succeeded)
+        {
+            TempData["ProfileEditSuccessMessage"] = $"User '{user.Email}' profile updated successfully.";
+            return RedirectToAction(nameof(Index));
+        }
+        else
+        {
+            foreach (var error in updateResult.Errors)
+            {
+                ModelState.AddModelError(string.Empty, $"Error updating profile: {error.Description}");
+            }
+            return View(model);
+        }
+    }
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(string id)
     {
-        if (string.IsNullOrEmpty(id))
-        {
-            TempData["ErrorMessage"] = "User ID cannot be null or empty.";
-            return RedirectToAction(nameof(Index));
-        }
-
         var user = await _userManager.FindByIdAsync(id);
-        if (user == null)
+        if (user != null)
         {
-            TempData["ErrorMessage"] = "User not found.";
-            return NotFound();
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = "User deleted successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Error deleting user.";
+            }
         }
-
-        //prevent deleting the initial superadmin
-        if (user.Email == "admin@fitpro.com")
-        {
-            TempData["ErrorMessage"] = "The primary admin account cannot be deleted.";
-            return RedirectToAction(nameof(Details), new { id = user.Id });
-        }
-
-        var result = await _userManager.DeleteAsync(user);
-
-        if (result.Succeeded)
-        {
-            TempData["UserDeleteSuccessMessage"] = $"User '{user.Email}' deleted successfully.";
-        }
-        else
-        {
-            TempData["UserDeleteErrorMessage"] =
-                "Error deleting user: " + string.Join(", ", result.Errors.Select(e => e.Description));
-        }
-
         return RedirectToAction(nameof(Index));
     }
 }
