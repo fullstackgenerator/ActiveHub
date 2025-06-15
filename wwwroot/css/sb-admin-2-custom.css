@@ -72,6 +72,7 @@ a {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    margin-left: 14rem;
 }
 
 #content {
@@ -80,8 +81,12 @@ a {
 
 .sidebar {
     width: 14rem;
-    min-height: 100vh;
     box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
     z-index: 1000;
 }
 

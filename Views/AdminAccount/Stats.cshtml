@@ -1,24 +1,23 @@
-﻿@model ActiveHub.Models.AdminDashboard
+﻿@model ActiveHub.Models.StatsViewModel
 
 @{
-ViewData["Title"] = "Stats and Data Overview";
-Layout = "_DashboardLayoutAdmin";
+    ViewData["Title"] = "Stats and Data Overview";
+    Layout = "_DashboardLayoutAdmin";
 }
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Stats and Data Overview</h1>
 </div>
 
-<form class="row g-3 align-items-end mb-4" method="get" id="filterForm">
+<form method="get" action="/AdminAccount/StatsAndData" id="filterForm" class="row g-3 align-items-end mb-4">
+    
     <div class="col-md-3">
-        <label class="form-label">From</label>
-        <input class="form-control datepicker" type="text" name="fromDate"
-               value="@ViewData["fromDate"]"/>
+        <input class="form-control datepicker" type="text" name="fromDate" placeholder="From date"
+               value="@Model.FromDate"/>
     </div>
     <div class="col-md-3">
-        <label class="form-label">To</label>
-        <input class="form-control datepicker" type="text" name="toDate"
-               value="@ViewData["toDate"]"/>
+        <input class="form-control datepicker" type="text" name="toDate" placeholder="To date"
+               value="@Model.ToDate"/>
     </div>
     <div class="col-md-auto">
         <button class="btn btn-outline-success" type="submit">
@@ -30,30 +29,93 @@ Layout = "_DashboardLayoutAdmin";
     </div>
 </form>
 
-<div class="row">
-    <div class="col-lg-6 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">New Users Over Time</h6>
-            </div>
-        </div>
-    </div>
 
-    <div class="col-lg-6 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Programs Used</h6>
-            </div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Number of users</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stat in Model.UserRegistrations)
+                    {
+                        if (stat != null) // Added null check
+                        {
+                            <tr>
+                                <td>@stat.Date.ToString("dd.MM.yyyy")</td>
+                                <td>@stat.Count</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-lg-12 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Total Income</h6>
-            </div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Program Usage</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Program name</th>
+                        <th>Number of users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stat in Model.ProgramUsage)
+                    {
+                        if (stat != null) // Added null check
+                        {
+                            <tr>
+                                <td>@stat.ProgramName</td>
+                                <td>@stat.UsageCount</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Income</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stat in Model.IncomeStats)
+                    {
+                        if (stat != null) // Added null check
+                        {
+                            <tr>
+                                <td>@stat.Date.ToString("dd.MM.yyyy")</td>
+                                <td>@stat.Amount.ToString("C")</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

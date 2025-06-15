@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq; // Ensure this is present for LINQ methods
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ActiveHub.Controllers;
 
@@ -24,7 +28,7 @@ public class AdminAccountController : Controller
     }
 
     [HttpGet]
-    public IActionResult Login(string? returnUrl = null) //for redirecting after login
+    public IActionResult Login(string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
         return View();
@@ -37,7 +41,6 @@ public class AdminAccountController : Controller
         ViewData["ReturnUrl"] = returnUrl;
         if (!ModelState.IsValid) return View(model);
 
-        //find user by email first
         var user = await _userManager.FindByEmailAsync(model.Email);
         if (user == null)
         {
@@ -45,7 +48,6 @@ public class AdminAccountController : Controller
             return View(model);
         }
 
-        //sign the user in
         var result =
             await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe,
                 lockoutOnFailure: false);
@@ -59,7 +61,7 @@ public class AdminAccountController : Controller
                 return View(model);
             }
 
-            if (Url.IsLocalUrl(returnUrl)) //validate return urls for security
+            if (Url.IsLocalUrl(returnUrl))
             {
                 return Redirect(returnUrl);
             }
@@ -70,7 +72,7 @@ public class AdminAccountController : Controller
         {
             ModelState.AddModelError(string.Empty, "Account locked out. Please try again later.");
         }
-        else //like wrong password
+        else
         {
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
         }
@@ -90,10 +92,9 @@ public class AdminAccountController : Controller
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Dashboard()
     {
-        var today = DateTime.Today; // Only date part
+        var today = DateTime.Today;
         var endOfWeek = today.AddDays(7);
 
-        //fetch the data dynamically
         var totalUsers = await _userManager.Users.CountAsync();
 
         var newUsersTodayCount = await _userManager.Users
@@ -128,12 +129,90 @@ public class AdminAccountController : Controller
     
     [HttpGet]
     [Authorize(Roles = "Admin")]
-    public IActionResult StatsAndData(string? fromDate, string? toDate)
+    public async Task<IActionResult> StatsAndData(string? fromDate, string? toDate)
     {
-        ViewData["fromDate"] = fromDate;
-        ViewData["toDate"] = toDate;
+        var model = new StatsViewModel
+        {
+            FromDate = fromDate,
+            ToDate = toDate,
+            DashboardStats = new AdminDashboard()
+        };
 
-        return View("Stats");
+        DateTime? parsedFromDate = null;
+        DateTime? parsedToDate = null;
+
+        if (DateTime.TryParse(fromDate, out var parsedDate))
+        {
+            parsedFromDate = parsedDate.Date;
+        }
+
+        if (DateTime.TryParse(toDate, out parsedDate))
+        {
+            parsedToDate = parsedDate.Date.AddDays(1).AddTicks(-1); // End of the day
+        }
+
+        //populate UserRegistrations
+        //filtering by date range if provided
+        IQueryable<ApplicationUser> userQuery = _context.ApplicationUsers;
+        if (parsedFromDate.HasValue)
+        {
+            userQuery = userQuery.Where(u => u.RegistrationDate.HasValue && u.RegistrationDate.Value.Date >= parsedFromDate.Value);
+        }
+        if (parsedToDate.HasValue)
+        {
+            userQuery = userQuery.Where(u => u.RegistrationDate.HasValue && u.RegistrationDate.Value.Date <= parsedToDate.Value);
+        }
+
+        model.UserRegistrations = await userQuery
+            .Where(u => u.RegistrationDate.HasValue)
+            .GroupBy(u => u.RegistrationDate.Value.Date)
+            .Select(g => new UserRegistrationStat { Date = g.Key, Count = g.Count() })
+            .OrderBy(s => s.Date)
+            .ToListAsync();
+
+        //populate ProgramUsage based on MembershipType and Memberships
+        //counts how many memberships of each special program type exist
+        IQueryable<Membership> programUsageQuery = _context.Memberships
+            .Include(m => m.MembershipType)
+            .Where(m => m.MembershipType.Category == MembershipCategory.Special);
+
+        if (parsedFromDate.HasValue)
+        {
+            programUsageQuery = programUsageQuery.Where(m => m.StartDate >= parsedFromDate.Value);
+        }
+        if (parsedToDate.HasValue)
+        {
+            programUsageQuery = programUsageQuery.Where(m => m.StartDate <= parsedToDate.Value);
+        }
+
+        model.ProgramUsage = await programUsageQuery
+            .GroupBy(m => m.MembershipType.Name)
+            .Select(g => new ProgramUsageStat { ProgramName = g.Key, UsageCount = g.Count() })
+            .OrderBy(s => s.ProgramName)
+            .ToListAsync();
+
+
+        //populate IncomeStats based on Memberships and MembershipTypes
+        //calculates income from memberships by their start date
+        IQueryable<Membership> incomeQuery = _context.Memberships
+            .Include(m => m.MembershipType); // Include MembershipType to access price
+
+        if (parsedFromDate.HasValue)
+        {
+            incomeQuery = incomeQuery.Where(m => m.StartDate >= parsedFromDate.Value);
+        }
+        if (parsedToDate.HasValue)
+        {
+            incomeQuery = incomeQuery.Where(m => m.StartDate <= parsedToDate.Value);
+        }
+
+        model.IncomeStats = await incomeQuery
+            .GroupBy(m => m.StartDate.Date)
+            .Select(g => new IncomeStat { Date = g.Key, Amount = g.Sum(m => m.MembershipType.Price) })
+            .OrderBy(s => s.Date)
+            .ToListAsync();
+
+        return View("Stats", model);
     }
     
     [HttpGet]
