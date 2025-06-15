@@ -10,3 +10,20 @@ $(document).ready(function() {
         $(".alert").fadeOut("slow");
     }, 5000);
 });
+
+$(document).ready(function () {
+    $('.datepicker').datepicker({
+        format: 'dd.mm.yyyy',
+        weekStart: 1,
+        autoclose: true,
+        todayHighlight: true
+    });
+
+    //clear button functionality
+    $('#btnClearFilter').on('click', function() {
+        //clear date inputs
+        $('input[name="fromDate"]').val('');
+        $('input[name="toDate"]').val('');
+        $('#filterForm').submit();
+    });
+});

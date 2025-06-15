@@ -7,98 +7,86 @@
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="~/css/sb-admin-2-custom.css" asp-append-version="true"/>
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 </head>
 <body id="page-top">
-<div id="wrapper">
-
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-controller="Home"
-           asp-action="Index">
-            <div class="sidebar-brand-icon rotate-n-15">
+    <div id="wrapper">
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-controller="Home"
+               asp-action="Index">
+                <div class="sidebar-brand-icon rotate-n-15"></div>
+                <div class="sidebar-brand-text mx-3">ActiveHub</div>
+            </a>
+            <hr class="sidebar-divider my-0">
+            <li class="nav-item active">
+                <a class="nav-link" asp-controller="AdminAccount" asp-action="Dashboard">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="AdminAccount" asp-action="ChangePassword">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="ManageUsers" asp-action="Index">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Manage Users</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="AdminAccount" asp-action="StatsAndData">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Stats & Data</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <form asp-controller="AdminAccount" asp-action="Logout" method="post" class="form-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="nav-link bg-transparent border-0" style="width: 100%; text-align: left;">
+                        <i class="fas fa-sign-out-alt fa-fw mr-2"></i>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </li>
+            <hr class="sidebar-divider d-none d-md-block">
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
-            <div class="sidebar-brand-text mx-3">ActiveHub</div>
-        </a>
-
-        <hr class="sidebar-divider my-0">
-
-        <li class="nav-item active">
-            <a class="nav-link" asp-controller="AdminAccount" asp-action="Dashboard">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" asp-controller="AdminAccount" asp-action="ChangePassword">
-                <i class="fas fa-fw fa-cog"></i>
-                <span>Settings</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" asp-controller="ManageUsers" asp-action="Index">
-                <i class="fas fa-fw fa-users"></i>
-                <span>Manage Users</span>
-            </a>
-        </li>
-        
-        
-        <li class="nav-item">
-            <form asp-controller="AdminAccount" asp-action="Logout" method="post" class="form-inline">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="nav-link bg-transparent border-0" style="width: 100%; text-align: left;">
-                    <i class="fas fa-sign-out-alt fa-fw mr-2"></i>
-                    <span>Logout</span>
-                </button>
-            </form>
-        </li>
-
-        <hr class="sidebar-divider d-none d-md-block">
-
-        <div class="text-center d-none d-md-inline">
-            <button class="rounded-circle border-0" id="sidebarToggle"></button>
-        </div>
-
-    </ul>
-    <div id="content-wrapper" class="d-flex flex-column">
-
-        <div id="content">
-
-            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                <ul class="navbar-nav ml-auto">
-
-                    <li class="nav-item dropdown no-arrow">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">@User.Identity.Name</span>
-                        </a>
-
-                    </li>
-
-                </ul>
-
-            </nav>
-            <div class="container-fluid">
-                @RenderBody()
+        </ul>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@User.Identity.Name</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
             </div>
         </div>
     </div>
-</div>
-<a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-</a>
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
-<script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-<script src="~/js/sb-admin-2.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+<script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

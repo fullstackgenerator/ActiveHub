@@ -8,6 +8,7 @@
     --sb-admin-danger: #e74a3b;
     --sb-admin-light: #f8f9fc;
     --sb-admin-dark: #5a5c69;
+    --sb-admin-indigo-300: #6f42c1;
 
     /* gray scale */
     --sb-admin-gray-100: #f8f9fc;
@@ -295,4 +296,12 @@ a {
 
 .membership-entry small {
     color: var(--sb-admin-gray-600);
+}
+
+.border-left-indigo-300 {
+    border-left: .25rem solid var(--sb-admin-indigo-300) !important;
+}
+
+.text-indigo-300 {
+    color: var(--sb-admin-indigo-300) !important;
 }

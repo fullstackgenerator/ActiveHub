@@ -125,7 +125,17 @@ public class AdminAccountController : Controller
 
         return View(viewModel);
     }
+    
+    [HttpGet]
+    [Authorize(Roles = "Admin")]
+    public IActionResult StatsAndData(string? fromDate, string? toDate)
+    {
+        ViewData["fromDate"] = fromDate;
+        ViewData["toDate"] = toDate;
 
+        return View("Stats");
+    }
+    
     [HttpGet]
     [Authorize]
     public IActionResult ChangePassword()
