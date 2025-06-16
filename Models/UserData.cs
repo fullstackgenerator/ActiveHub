@@ -9,8 +9,8 @@ namespace ActiveHub.Models
         public List<UserRegistrationStat> UserRegistrations { get; set; } = new();
         public List<ProgramUsageStat> ProgramUsage { get; set; } = new();
         public List<IncomeStat> IncomeStats { get; set; } = new();
-        public string FromDate { get; set; }
-        public string ToDate { get; set; }
+        public string? FromDate { get; set; }
+        public string? ToDate { get; set; }
     }
 
     public class UserRegistrationStat

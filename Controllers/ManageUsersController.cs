@@ -1,10 +1,8 @@
-﻿using ActiveHub.Data;
-using ActiveHub.Models;
+﻿using ActiveHub.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 
 namespace ActiveHub.Controllers;
 
@@ -13,13 +11,11 @@ public class ManageUsersController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly ApplicationDbContext _context;
 
-    public ManageUsersController(ApplicationDbContext context,
+    public ManageUsersController(
         UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager)
     {
-        _context = context;
         _userManager = userManager;
         _roleManager = roleManager;
     }
@@ -32,10 +28,10 @@ public class ManageUsersController : Controller
         if (!string.IsNullOrEmpty(searchString))
         {
             users = users.Where(u =>
-                u.FirstName.Contains(searchString) ||
-                u.LastName.Contains(searchString) ||
-                u.Email.Contains(searchString) ||
-                u.UserName.Contains(searchString)
+                (u.FirstName ?? "").Contains(searchString) ||
+                (u.LastName ?? "").Contains(searchString) ||
+                (u.Email ?? "").Contains(searchString) ||
+                (u.UserName ?? "").Contains(searchString)
             );
         }
 
@@ -47,7 +43,7 @@ public class ManageUsersController : Controller
     // GET: ManageUsers/Details/{id}
     public async Task<IActionResult> Details(string id)
     {
-        if (id == null)
+        if (string.IsNullOrWhiteSpace(id))
         {
             return NotFound();
         }
@@ -65,73 +61,10 @@ public class ManageUsersController : Controller
         return View(user);
     }
 
-    // GET: ManageUsers/CreateAdmin
-    [HttpGet]
-    public IActionResult CreateAdmin()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateAdmin(AdminRegister model)
-    {
-        if (!ModelState.IsValid)
-        {
-            return View(model);
-        }
-
-        var user = new ApplicationUser
-        {
-            UserName = model.Email,
-            Email = model.Email,
-            FirstName = model.FirstName,
-            LastName = model.LastName,
-            RegistrationDate = DateTime.UtcNow
-        };
-
-        var result = await _userManager.CreateAsync(user, model.Password);
-
-        if (result.Succeeded)
-        {
-            //check if Admin role exists, create it if not
-            if (!await _roleManager.RoleExistsAsync("Admin"))
-            {
-                await _roleManager.CreateAsync(new IdentityRole("Admin"));
-            }
-
-            //assign Admin role to the newly created user
-            var addToRoleResult = await _userManager.AddToRoleAsync(user, "Admin");
-
-            if (addToRoleResult.Succeeded)
-            {
-                TempData["SuccessMessage"] =
-                    $"Admin user '{user.Email}' created and assigned 'Admin' role successfully.";
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                foreach (var error in addToRoleResult.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-        }
-        else
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-        }
-
-        return View(model);
-    }
-
     [HttpGet]
     public async Task<IActionResult> Edit(string id)
     {
-        if (id == null)
+        if (string.IsNullOrWhiteSpace(id))
         {
             return NotFound();
         }
@@ -147,7 +80,7 @@ public class ManageUsersController : Controller
             Id = user.Id,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Email = user.Email,
+            Email = user.Email ?? string.Empty,
             PhoneNumber = user.PhoneNumber,
             DateOfBirth = user.DateOfBirth,
             Address = user.Address,

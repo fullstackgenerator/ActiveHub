@@ -80,8 +80,7 @@ public class PricingController : Controller
 
         return View(model);
     }
-
-
+    
     //enroll action is accepting the chosen startDate (POST)
     [HttpPost]
     [Authorize]

@@ -4,10 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq; // Ensure this is present for LINQ methods
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ActiveHub.Controllers;
 
@@ -165,7 +161,7 @@ public class AdminAccountController : Controller
 
         model.UserRegistrations = await userQuery
             .Where(u => u.RegistrationDate.HasValue)
-            .GroupBy(u => u.RegistrationDate.Value.Date)
+            .GroupBy(u => u.RegistrationDate!.Value.Date)
             .Select(g => new UserRegistrationStat { Date = g.Key, Count = g.Count() })
             .OrderBy(s => s.Date)
             .ToListAsync();

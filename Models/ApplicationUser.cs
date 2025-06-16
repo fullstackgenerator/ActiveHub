@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
 
 namespace ActiveHub.Models;
 
@@ -9,12 +8,12 @@ public class ApplicationUser : IdentityUser
     [Required]
     [Display(Name = "First Name")]
     [PersonalData]
-    public string FirstName { get; set; }
+    public required string FirstName { get; set; }
     
     [Required]
     [Display(Name = "Last Name")]
     [PersonalData]
-    public string LastName { get; set; }
+    public required string LastName { get; set; }
     
     [Display(Name = "Registration Date")]
     [DataType(DataType.DateTime)]
@@ -27,6 +26,7 @@ public class ApplicationUser : IdentityUser
     public DateOnly? DateOfBirth { get; set; }
     
     [PersonalData]
+    [MaxLength(250)]
     public string? Address { get; set; }
     
     [Display(Name = "Postal Code")]
@@ -34,6 +34,7 @@ public class ApplicationUser : IdentityUser
     public int? PostNumber { get; set; }
     
     [PersonalData]
+    [MaxLength(250)]
     public string? City { get; set; }
     
     ICollection<Membership> Memberships { get; set; }

@@ -138,7 +138,7 @@ namespace ActiveHub.Controllers
             }
 
             //add data to worksheet
-            var range = worksheet.Cell(1, 1).InsertTable(table);
+            worksheet.Cell(1, 1).InsertTable(table);
 
             //headers
             var header = worksheet.Range(1, 1, 1, properties.Length);
