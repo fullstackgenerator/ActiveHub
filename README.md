@@ -1,4 +1,4 @@
-# Fitness Center Management System (Full-Stack .NET MVC)
+# Fitness Center Management System
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
