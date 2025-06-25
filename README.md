@@ -1,5 +1,7 @@
 # Fitness Center Management System (Full-Stack .NET MVC)
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Discover the efficiency of this full-stack .NET MVC web application, tailored for the dynamic environment of a fitness center. It’s designed to streamline the membership process from start to finish.
 
 ![1](https://github.com/user-attachments/assets/97115125-f696-4146-a8fb-eff0feb06237)
@@ -48,3 +50,7 @@ The administrative backend provides a powerful toolkit for managing the center's
 * **User Management:** Staff can oversee user accounts, performing necessary edits or removals.
 * **Performance Insights:** The system offers detailed insights into the center’s performance, displaying statistics on user numbers, membership types, and revenue generation.
 * **Data Export:** All valuable information can be conveniently exported to an Excel spreadsheet using the integrated [EPPlus library](https://github.com/EPPlusSoftware/EPPlus), allowing for in-depth analysis.
+
+### License
+
+This project is licensed under the [MIT License](LICENSE).
